@@ -7,5 +7,5 @@
     - flask_socketio
 
 ## Run
-- Commandgit push -u origin master
+- Command
     - flask run
