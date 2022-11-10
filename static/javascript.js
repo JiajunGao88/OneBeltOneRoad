@@ -7,8 +7,9 @@ $(document).ready(function() {
       socket.send(socket_id.toString() + ": User connected!");
     });
     socket.on('message', function(data) {
-        console.log(data);
-
+        // console.log(data);
+        // avatar_adding(3, 0);
+        // test_avatar(0, 65);
         const gameStatus = JSON.parse(data)[0];
         const ret_mes = JSON.parse(data)[1];
         if (gameStatus === "game") {
@@ -28,8 +29,9 @@ $(document).ready(function() {
                 $("#ready_message").append($('<h4>').text("Waiting for the other players ready!"))
             }
             ready_amount.append($('<h4>').text(ret_mes.length));
+        } else if (gameStatus === "end") {
+            alert(ret_mes);
         } else {
-            console.log("start game!");
             $("#ready_area").hide();
             alert("Game start!");
             let roll_user = user_profile_fill(ret_mes);
@@ -49,22 +51,41 @@ $(document).ready(function() {
 
     let images = ["static/img/dice_1.png", "static/img/dice_2.png", "static/img/dice_3.png", "static/img/dice_4.png", "static/img/dice_5.png", "static/img/dice_6.png"];
     let dice = document.querySelectorAll("img[class=die]");
+    let avatar = ["/static/img/avatar1.png", "/static/img/avatar2.png", "/static/img/avatar3.png", "/static/img/avatar4.png"];
+
+    function avatar_adding(user_id, loc_num) {
+        var image = new Image();
+        image.src = avatar[user_id - 1];
+        image.className = "avatar";
+        image.id = "avatar" + user_id;
+        $("#grid-" + loc_num.toString() + "-" + user_id.toString()).append(image);
+
+    }
+
+    function test_avatar(begin, end) {
+        for (let i = begin; i <= end; i++) {
+            for (let j = 1; j < 5; j++) {
+                setTimeout(avatar_adding(j, i), 1000);
+            }
+        }
+    }
 
     function refresh_items() {
         $(".dice-button").hide();
         $(".term_logo").remove();
         $(".location_val").empty();
         $(".status_val").empty();
+        $(".avatar").remove();
     }
 
     function user_profile_fill(ret_mes) {
         let roll_user = 0;
         for (let i = 0; i < 4; i++) {
             let user_id = i + 1;
-            // console.log(ret_mes);
             $("#location_val_" + user_id.toString()).append($('<h3>').text(ret_mes["user"][i]["location"]));
+            avatar_adding(user_id, ret_mes["user"][i]["location"]);
             if (ret_mes["user"][i]["status"]) {
-                $("#status_val_" + user_id.toString()).append($('<h3>').text("Stop rolling one term!"));
+                $("#status_val_" + user_id.toString()).append($('<h3>').text("Stop!"));
             } else {
                 $("#status_val_" + user_id.toString()).append($('<h3>').text("normal"));
             }
@@ -84,10 +105,7 @@ $(document).ready(function() {
         dice.forEach(function(die){
           die.classList.remove("shake");
         });
-        // let dieOneValue = Math.floor(Math.random() * 6);
-        // let dieTwoValue = Math.floor(Math.random() * 6);
 
-        // console.log(dieOneValue+1, dieTwoValue+1);
         document.querySelector("#die-1").setAttribute("src", images[num - 1]);
         // document.querySelector("#die-2").setAttribute("src", images[dieTwoValue]);
       },

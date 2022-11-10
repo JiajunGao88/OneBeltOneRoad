@@ -26,6 +26,8 @@ def game_func(term_info, steps):
     termOfUsers = users.index(term_info["user"])
     users_info[termOfUsers]["location"] += steps
     location = users_info[termOfUsers]["location"]
+    if location >= 65:
+        return "User{} wins!".format(termOfUsers + 1)
     if location in transfer_entries.keys():
         users_info[termOfUsers]["location"] = transfer_entries[location]
     if location in countries:
@@ -40,4 +42,6 @@ def game_func(term_info, steps):
             break
     return users_info
 
-# {step: 0-6}
+
+
+

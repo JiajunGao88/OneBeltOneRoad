@@ -22,6 +22,7 @@ def handle_message(message):
             for i in range(0, len(game_engine.users)):
                 game_engine.users_info[i]["user_id"] = game_engine.users[i]
             send(json.dumps(["start", {"roll_num": 1, "user": game_engine.users_info}]), broadcast=True)
+
         else:
             game_engine.ready_list.append(int(message.split(":")[0]))
             send(json.dumps(["ready", game_engine.ready_list]), broadcast=True)
@@ -29,6 +30,8 @@ def handle_message(message):
         term_info = json.loads(message)
         roll_num = game_engine.roll_dice()
         ret_game_states = game_engine.game_func(term_info, roll_num)
+        if type(ret_game_states) == str:
+            send(json.dumps(["end", ret_game_states]))
         for i in range(0, len(game_engine.users)):
             ret_game_states[i]["user_id"] = game_engine.users[i]
         send(json.dumps(["game", {"roll_num": roll_num, "user": ret_game_states}]), broadcast=True)
