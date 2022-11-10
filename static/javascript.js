@@ -7,9 +7,9 @@ $(document).ready(function() {
       socket.send(socket_id.toString() + ": User connected!");
     });
     socket.on('message', function(data) {
-        // console.log(data);
+        console.log(data);
         // avatar_adding(3, 0);
-        // test_avatar(0, 65);
+        // test_avatar(11, 11);
         const gameStatus = JSON.parse(data)[0];
         const ret_mes = JSON.parse(data)[1];
         if (gameStatus === "game") {
@@ -18,6 +18,11 @@ $(document).ready(function() {
             let roll_user = user_profile_fill(ret_mes);
             if (roll_user === socket_id) {
                 $(".dice-button").show();
+            }
+            let alert_mess = JSON.parse(data)[2];
+            console.log(alert_mess)
+            if (alert_mess.length !== 0 && alert_mess[0] === socket_id) {
+                alert_spec_status(alert_mess[1]);
             }
         } else if (gameStatus === "ready") {
             var ready_amount = $("#ready_amount");
@@ -68,6 +73,21 @@ $(document).ready(function() {
                 setTimeout(avatar_adding(j, i), 1000);
             }
         }
+    }
+
+    function alert_spec_status(mes) {
+        if (typeof mes !== "number") {
+            let base_sent = "you reach " + mes[0] +", and you are moved from " + mes[0] + " to " + mes[1] + ".";
+            console.log(base_sent);
+            if (mes[0] < mes[1]) {
+                alert("Fortunately, " + base_sent);
+            } else {
+                alert("Unfortunately, " + base_sent);
+            }
+        } else {
+             alert("Enjoy your view for one round.");
+        }
+
     }
 
     function refresh_items() {

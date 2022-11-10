@@ -12,6 +12,9 @@ users_info = [{"location": 0, "status": False, "term": True},
               {"location": 0, "status": False, "term": False},
               {"location": 0, "status": False, "term": False}]
 
+alert_status = []
+
+
 ready_list = []
 users = []
 
@@ -30,8 +33,12 @@ def game_func(term_info, steps):
         return "User{} wins!".format(termOfUsers + 1)
     if location in transfer_entries.keys():
         users_info[termOfUsers]["location"] = transfer_entries[location]
+        alert_status.append(users[termOfUsers])
+        alert_status.append([location, transfer_entries[location]])
     if location in countries:
         users_info[termOfUsers]["status"] = True
+        alert_status.append(users[termOfUsers])
+        alert_status.append(location)
     users_info[termOfUsers]["term"] = False
     while True:
         termOfUsers += 1
