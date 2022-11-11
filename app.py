@@ -15,6 +15,7 @@ def index():  # put application's code here
 @socketio.on('message')
 def handle_message(message):
     print("Received message: " + message)
+    game_engine.alert_status = []
     if "User connected!" in message:
         game_engine.users.append(int(message.split(":")[0]))
     elif "User ready!" in message:
@@ -34,7 +35,7 @@ def handle_message(message):
             send(json.dumps(["end", ret_game_states]))
         for i in range(0, len(game_engine.users)):
             ret_game_states[i]["user_id"] = game_engine.users[i]
-        send(json.dumps(["game", {"roll_num": roll_num, "user": ret_game_states}]), broadcast=True)
+        send(json.dumps(["game", {"roll_num": roll_num, "user": ret_game_states}, game_engine.alert_status]), broadcast=True)
 
 
 if __name__ == '__main__':
