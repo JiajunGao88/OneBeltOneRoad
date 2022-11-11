@@ -19,6 +19,9 @@ $(document).ready(function() {
             if (roll_user === socket_id) {
                 $(".dice-button").show();
             }
+            if (alert_mess.length !== 0 && alert_mess[0] === socket_id) {
+                alert_spec_status(alert_mess[1]);
+            }
         } else if (gameStatus === "ready") {
             var ready_amount = $("#ready_amount");
             ready_amount.empty();
@@ -78,6 +81,20 @@ $(document).ready(function() {
         $(".avatar").remove();
     }
 
+    function alert_spec_status(mes) {
+        if (typeof mes !== "number") {
+            let base_sent = "you reach " + mes[0] +", and you are moved from " + mes[0] + " to " + mes[1] + ".";
+            console.log(base_sent);
+            if (mes[0] < mes[1]) {
+                alert("Fortunately, " + base_sent);
+            } else {
+                alert("Unfortunately, " + base_sent);
+            }
+        } else {
+             alert("Enjoy your view for one round.");
+        }
+
+    }
     function user_profile_fill(ret_mes) {
         let roll_user = 0;
         for (let i = 0; i < 4; i++) {
