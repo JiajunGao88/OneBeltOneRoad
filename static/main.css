@@ -3,7 +3,7 @@
     padding-right: 6%;
     padding-bottom: 2%;
 }
-#user {
+#user, #ready_area {
     height: 160px;
     border: 2px solid black;
     margin-top: 2%;
@@ -81,7 +81,10 @@ img{
     height: 80%;
     padding-top: 20%;
 }
-#term_logo {
-    font-size: 150%;
+.term_logo {
+    font-size: 180%;
+}
+#location_val, #status_val {
+    font-size: 20px;
 }
 
