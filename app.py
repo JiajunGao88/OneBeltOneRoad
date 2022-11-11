@@ -14,7 +14,8 @@ def index():  # put application's code here
 
 @socketio.on('message')
 def handle_message(message):
-    print("Received message: " + message)
+    # print("hello")
+    # print("Received message: " + message)
     game_engine.alert_status = []
     if "User connected!" in message:
         game_engine.users.append(int(message.split(":")[0]))
