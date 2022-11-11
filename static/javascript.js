@@ -19,11 +19,10 @@ $(document).ready(function() {
             if (roll_user === socket_id) {
                 $(".dice-button").show();
             }
-<<<<<<< HEAD
-=======
+
             let alert_mess = JSON.parse(data)[2];
             console.log(alert_mess)
->>>>>>> 333d3b4414ca1a560341294946d213032802e01e
+
             if (alert_mess.length !== 0 && alert_mess[0] === socket_id) {
                 alert_spec_status(alert_mess[1]);
             }
