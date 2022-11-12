@@ -26,7 +26,7 @@ def roll_dice():
 
 def game_func(term_info, steps):
     # steps = term_info["step"]
-    termOfUsers = ready_list.index(term_info["user"])
+    termOfUsers = users.index(term_info["user"])
     users_info[termOfUsers]["location"] += steps
     location = users_info[termOfUsers]["location"]
     if location >= 65:

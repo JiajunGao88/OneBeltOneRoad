@@ -7,7 +7,7 @@ $(document).ready(function() {
       socket.send(socket_id.toString() + ": User connected!");
     });
     socket.on('message', function(data) {
-        console.log(data);
+        // console.log(data);
         // avatar_adding(3, 0);
         // test_avatar(11, 11);
         const gameStatus = JSON.parse(data)[0];
@@ -19,10 +19,8 @@ $(document).ready(function() {
             if (roll_user === socket_id) {
                 $(".dice-button").show();
             }
-
             let alert_mess = JSON.parse(data)[2];
-            console.log(alert_mess)
-
+            // console.log(alert_mess)
             if (alert_mess.length !== 0 && alert_mess[0] === socket_id) {
                 alert_spec_status(alert_mess[1]);
             }
@@ -69,13 +67,13 @@ $(document).ready(function() {
 
     }
 
-    function test_avatar(begin, end) {
-        for (let i = begin; i <= end; i++) {
-            for (let j = 1; j < 5; j++) {
-                setTimeout(avatar_adding(j, i), 1000);
-            }
-        }
-    }
+    // function test_avatar(begin, end) {
+    //     for (let i = begin; i <= end; i++) {
+    //         for (let j = 1; j < 5; j++) {
+    //             setTimeout(avatar_adding(j, i), 1000);
+    //         }
+    //     }
+    // }
 
     function alert_spec_status(mes) {
         if (typeof mes !== "number") {
