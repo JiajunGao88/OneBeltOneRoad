@@ -1,5 +1,7 @@
 import random
 
+import app
+
 transfer_entries = {
     6: 15, 7: 11, 11: 7, 15: 6,
     14: 38, 17: 26, 19: 23, 23: 19, 24: 42, 26: 17,
@@ -47,6 +49,7 @@ def game_func(term_info, steps):
         else:
             users_info[termOfUsers % 4]["term"] = True
             break
+    app.users_info_collection.update_one({"datatype": "status"}, {"$set": {"users": users_info}})
     return users_info
 
 

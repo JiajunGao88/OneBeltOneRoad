@@ -1,9 +1,14 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, send
 import json
+from pymongo import MongoClient
 
 import game_engine
 
+
+mongo_client = MongoClient("mongo")
+db = mongo_client["proj"]
+users_info_collection = db["users_info"]
 app = Flask(__name__, static_url_path="/static")
 app.config['SECRET'] = "secret!123"
 socketio = SocketIO(app, cors_allowed_origins="*")
@@ -28,12 +33,14 @@ def handle_message(message):
             for i in range(0, len(game_engine.ready_list)):
                 game_engine.users_info[i]["user_id"] = game_engine.ready_list[i]
             game_engine.users = game_engine.ready_list
+            users_info_collection.insert_one({"datatype": "status", "users": game_engine.users_info})
             send(json.dumps(["start", {"roll_num": 1, "user": game_engine.users_info}]), broadcast=True)
     else:
         term_info = json.loads(message)
         roll_num = game_engine.roll_dice()
         ret_game_states = game_engine.game_func(term_info, roll_num)
         if type(ret_game_states) == str:
+            users_info_collection.delete_one({"datatype": "status"})
             send(json.dumps(["end", ret_game_states]))
         # for i in range(0, len(game_engine.ready_list)):
         #     ret_game_states[i]["user_id"] = game_engine.ready_list[i]
