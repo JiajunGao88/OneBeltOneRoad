@@ -13,9 +13,11 @@ app = Flask(__name__, static_url_path="/static")
 app.config['SECRET'] = "secret!123"
 socketio = SocketIO(app, cors_allowed_origins="*")
 
+dic_users = {}
+
 @app.route('/')
 def index():  # put application's code here
-    return render_template("index.html")
+    return render_template("index.html", amount_ready=str(len(game_engine.ready_list)))
 
 @socketio.on('message')
 def handle_message(message):
@@ -32,20 +34,35 @@ def handle_message(message):
         if len(game_engine.ready_list) == 4:
             for i in range(0, len(game_engine.ready_list)):
                 game_engine.users_info[i]["user_id"] = game_engine.ready_list[i]
-            game_engine.users = game_engine.ready_list
-            users_info_collection.insert_one({"datatype": "status", "users": game_engine.users_info})
+                game_engine.users = game_engine.ready_list
+            
+            # users_info_collection.insert_one({"datatype": "status", "users": game_engine.users_info})
             send(json.dumps(["start", {"roll_num": 1, "user": game_engine.users_info}]), broadcast=True)
+    elif "sign in" in message:
+        id, name, password = message_analysis(message)
+        print(id + "'s username is:" + name + ", password is:" + password)
+    elif "sign up" in message:
+        id, name, password = message_analysis(message)
+        print(id + "'s username is:" + name + ", password is:" + password)
     else:
         term_info = json.loads(message)
         roll_num = game_engine.roll_dice()
         ret_game_states = game_engine.game_func(term_info, roll_num)
         if type(ret_game_states) == str:
-            users_info_collection.delete_one({"datatype": "status"})
+            
+            # users_info_collection.delete_one({"datatype": "status"})
             send(json.dumps(["end", ret_game_states]))
         # for i in range(0, len(game_engine.ready_list)):
         #     ret_game_states[i]["user_id"] = game_engine.ready_list[i]
         send(json.dumps(["game", {"roll_num": roll_num, "user": ret_game_states}, game_engine.alert_status]), broadcast=True)
 
+def message_analysis(message):
+    name, password = "", ""
+    user_id = str(message.split(":")[0])
+    name = str(message.split(":")[2])
+    password = str(message.split(":")[3])
+    return user_id, name, password
+    
 
 if __name__ == '__main__':
     from waitress import serve

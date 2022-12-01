@@ -1,4 +1,6 @@
 $(document).ready(function() {
+    $("#login").hide();
+
     var socket = io.connect("http://localhost:5000");
     let socket_id = Math.floor(Math.random() * 100);
     socket.on('connect', function() {
@@ -46,9 +48,29 @@ $(document).ready(function() {
         }
 
     })
+    // user ready
     $("#ready-button").click(function () {
+        $("#login").show();
         socket.send(socket_id.toString() + ": User ready!");
     })
+
+    $("#complete_signin").click(function () {
+        signin_name = $("#signin_username").val();
+        signin_password = $("#signin_password").val();
+        $("#login").hide();
+        socket.send(socket_id.toString() + ":sign in:" + signin_name + ":" + signin_password);
+    })
+    $("#complete_signup").click(function () {
+        signup_name = $("#signup_username").val();
+        signup_password = $("#signup_password").val();
+        $("#login").hide();
+        socket.send(socket_id.toString() + ":sign up:" + signup_name + ":" + signup_password);
+    })
+
+
+
+
+
     // ---------- DICE START HERE ----------
     $(".dice-button").click(function (){
         socket.send(JSON.stringify({'user':  socket_id}));

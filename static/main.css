@@ -79,7 +79,6 @@ img{
 }
 .pic_avatar {
     height: 80%;
-    padding-top: 20%;
 }
 .term_logo {
     font-size: 180%;
@@ -88,4 +87,35 @@ img{
     font-size: 20px;
 }
 
+#login {
+  height: 100%;
+  width: 100%;
+  background-color: #94ddec;
+  z-index: 99;
+  position: absolute;
+  border-radius: 25px;
+}
+
+#login h1 {
+  margin: 10% 0 10% 0;
+  text-align: center;
+  color: white;
+}
+
+#login label {
+  color: beige;
+  margin-left: 10%;
+  text-align: left;
+}
+
+#login input {
+  margin-left: 10%;
+  width: 80%;
+}
+
+#login button {
+  width: 30%;
+  text-align: center;
+  margin-left: 35%;
+}
 
