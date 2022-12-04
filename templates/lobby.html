@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=1920px, height=1080px, initial-scale=1.0">
+    <title>World Travel</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename= 'lobby.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename= 'bootstrap.min.css')}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.2.0/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+</head>
+
+<body>
+  <div id="header">
+    <center>
+      <h1 id="header_font">World Travel</h1>
+    </center>
+  </div>
+
+  <div class="container">
+      <div class="row">
+          <div class="col-md-4" id="welcome-intro"><h3>Welcome back, {{user}}！</h3></div>
+          <div class="col-md-1" id="login-bottom">
+              <button class = "button" onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Login</button>
+          </div>
+      </div>
+      <br>
+      <br>
+      <div class="row">
+          <div class="col-md-8 room-list">
+              <div class="container">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <h3><b>Game Rooms List</b></h3>
+                        </div>
+                        <div class="col-md-3 offset-md-1">
+                            <button class = "button" onclick="document.getElementById('id02').style.display='block'" style="width:auto;"><span>&#43;</span></button>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                    <div class="row">
+                        <div class = "col-md-12 room-list-area" style="border: 2px solid #1c7430; height: 400px">
+                            <div class="container-fluid room-list-box" style="overflow-y: scroll; height: 85%">
+                                <div class="row">
+                                    <div class = "col-md-4">
+                                        <h4>Let's Play</h4>
+                                    </div>
+                                    <div class = "col-md-4 offset-md-4">
+                                        <span>&#9876;</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class = "col-md-4">
+                                        <h4>Let's Play</h4>
+                                    </div>
+                                    <div class = "col-md-4 offset-md-4">
+                                        <span>&#9876;</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class = "col-md-4">
+                                        <h4>Let's Play</h4>
+                                    </div>
+                                    <div class = "col-md-4 offset-md-4">
+                                        <span>&#9876;</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class = "col-md-4">
+                                        <h4>Let's Play</h4>
+                                    </div>
+                                    <div class = "col-md-4 offset-md-4">
+                                        <span>&#9876;</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class = "col-md-4">
+                                        <h4>Let's Play</h4>
+                                    </div>
+                                    <div class = "col-md-4 offset-md-4">
+                                        <span>&#9876;</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+          </div>
+          <!-- live chatting window -->
+          <div class="col-md-3 chat-list">
+
+          </div>
+      </div>
+  </div>
+ <!-- login window -->
+  <div id="id01" class="modal">
+      <form class="content animate" action="/login" method="post">
+        <div class="imgcontainer">
+          <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+        </div>
+
+        <div class="container">
+          <label for="uname"><b>Username</b></label>
+          <input type="text" placeholder="Enter Username" name="uname" required>
+
+          <label for="psw"><b>Password</b></label>
+          <input type="password" placeholder="Enter Password" name="psw" required>
+
+          <button type="submit">Login</button>
+        </div>
+
+        <div class="container" style="background-color:#f1f1f1">
+          <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
+        </div>
+      </form>
+    </div>
+  <!-- create window -->
+  <div id="id02" class="modal">
+      <form class="content animate" action="/action_page.php" method="post">
+        <div class="imgcontainer">
+          <span onclick="document.getElementById('id02').style.display='none'" class="close" title="Close Modal">&times;</span>
+        </div>
+
+        <div class="container">
+          <label for="room-name"><b>Username</b></label>
+          <input type="text" placeholder="Enter room name" name="room-name" required>
+
+          <button type="submit">Create</button>
+        </div>
+      </form>
+    </div>
+  <script src={{ url_for('static', filename='lobby.js')}}> </script>
+</body>
+
+</html>

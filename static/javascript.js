@@ -1,17 +1,12 @@
 $(document).ready(function() {
-    $("#login").hide();
-
-    var socket = io.connect("http://localhost:5000");
+    var socket = io.connect("http://localhost:5000/2231516qweq");
     let socket_id = Math.floor(Math.random() * 100);
     socket.on('connect', function() {
-      // console.log(socket_id)
+        // console.log(socket_id)
         $(".dice-button").hide();
-      socket.send(socket_id.toString() + ": User connected!");
+        // socket.send(socket_id.toString() + ": User connected!");
     });
     socket.on('message', function(data) {
-        // console.log(data);
-        // avatar_adding(3, 0);
-        // test_avatar(11, 11);
         const gameStatus = JSON.parse(data)[0];
         const ret_mes = JSON.parse(data)[1];
         if (gameStatus === "game") {
@@ -46,30 +41,24 @@ $(document).ready(function() {
                 $(".dice-button").show();
             }
         }
-
     })
+
     // user ready
     $("#ready-button").click(function () {
-        $("#login").show();
         socket.send(socket_id.toString() + ": User ready!");
     })
 
-    $("#complete_signin").click(function () {
-        signin_name = $("#signin_username").val();
-        signin_password = $("#signin_password").val();
-        $("#login").hide();
-        socket.send(socket_id.toString() + ":sign in:" + signin_name + ":" + signin_password);
-    })
-    $("#complete_signup").click(function () {
-        signup_name = $("#signup_username").val();
-        signup_password = $("#signup_password").val();
-        $("#login").hide();
-        socket.send(socket_id.toString() + ":sign up:" + signup_name + ":" + signup_password);
-    })
-
-
-
-
+    // $("#complete_signin").click(function () {
+    //     signin_name = $("#signin_username").val();
+    //     signin_password = $("#signin_password").val();
+    //     // $("#login").hide();
+    //     socket.send(socket_id.toString() + ":sign in:" + signin_name + ":" + signin_password);
+    // })
+    // $("#complete_signup").click(function () {
+    //     signup_name = $("#signup_username").val();
+    //     signup_password = $("#signup_password").val();
+    //     socket.send(socket_id.toString() + ":sign up:" + signup_name + ":" + signup_password);
+    // })
 
     // ---------- DICE START HERE ----------
     $(".dice-button").click(function (){
@@ -88,14 +77,6 @@ $(document).ready(function() {
         $("#grid-" + loc_num.toString() + "-" + user_id.toString()).append(image);
 
     }
-
-    // function test_avatar(begin, end) {
-    //     for (let i = begin; i <= end; i++) {
-    //         for (let j = 1; j < 5; j++) {
-    //             setTimeout(avatar_adding(j, i), 1000);
-    //         }
-    //     }
-    // }
 
     function alert_spec_status(mes) {
         if (typeof mes !== "number") {
@@ -120,6 +101,7 @@ $(document).ready(function() {
         $(".avatar").remove();
     }
 
+
     function alert_spec_status(mes) {
         if (typeof mes !== "number") {
             let base_sent = "you reach " + mes[0] +", and you are moved from " + mes[0] + " to " + mes[1] + ".";
@@ -134,6 +116,7 @@ $(document).ready(function() {
         }
 
     }
+
     function user_profile_fill(ret_mes) {
         let roll_user = 0;
         for (let i = 0; i < 4; i++) {

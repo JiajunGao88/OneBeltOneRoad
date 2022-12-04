@@ -16,17 +16,16 @@ users_info = [{"location": 0, "status": False, "term": True},
 
 alert_status = []
 
-
 ready_list = []
 users = []
-
+dic_users = []
 
 def roll_dice():
     num = random.randint(1, 6)
     return num
 
 
-def game_func(term_info, steps):
+def game_func(term_info, steps, users):
     # steps = term_info["step"]
     termOfUsers = users.index(term_info["user"])
     users_info[termOfUsers]["location"] += steps
