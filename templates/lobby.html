@@ -137,21 +137,21 @@
     </div>
   <!-- signin window -->
   <div id="id03" class="modal">
-      <form class="content animate" action="/signup" method="post">
+      <div class="content animate">
           <div class="imgcontainer">
           <span onclick="document.getElementById('id03').style.display='none'" class="close" title="Close Modal">&times;</span>
       </div>
         <div class="container">
           <label for="uname"><b>Username</b></label>
-          <input type="text" placeholder="Enter Username" name="uname" required>
+          <input type="text" placeholder="Enter Username" name="uname" id="signup_username" required>
 
           <label for="psw"><b>Password</b></label>
-          <input type="password" placeholder="Enter Password" name="psw" required>
+          <input type="password" placeholder="Enter Password" name="psw" id="signup_password" required>
 
           <button id="SignUp" value="SignUp">Sign Up</button>
         </div>
 
-      </form>
+      </div>
     </div>
   <script src={{ url_for('static', filename='lobby.js')}}> </script>
 </body>

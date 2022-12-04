@@ -49,6 +49,13 @@ def index():  # put application's code here
 #             send(json.dumps(["end", ret_game_states]))
 #         send(json.dumps(["game", {"roll_num": roll_num, "user": ret_game_states}, game_engine.alert_status]), broadcast=True)
 
+@socketio.on("signup", namespace="/")
+def signup_test(message):
+    print("I am here")
+    print(message)
+    emit('signup', "Welcome to Game!")
+
+
 
 # def password_confirm(username, input_password):
 #     for user in game_engine.users_info:
