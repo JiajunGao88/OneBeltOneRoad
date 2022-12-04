@@ -23,9 +23,14 @@
   <div class="container">
       <div class="row">
           <div class="col-md-4" id="welcome-intro"><h3>Welcome back, {{user}}！</h3></div>
+            <!-- login in-->
           <div class="col-md-1" id="login-bottom">
               <button class = "button" onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Login</button>
           </div>
+           <!-- sign up -->
+            <div class="col-md-3">
+                <button class = "button" onclick="document.getElementById('id03').style.display='block'" style="width:auto;"><span>Sign Up</span></button>
+            </div>
       </div>
       <br>
       <br>
@@ -39,6 +44,7 @@
                         <div class="col-md-3 offset-md-1">
                             <button class = "button" onclick="document.getElementById('id02').style.display='block'" style="width:auto;"><span>&#43;</span></button>
                         </div>
+
                     </div>
                     <br>
                     <br>
@@ -99,10 +105,9 @@
  <!-- login window -->
   <div id="id01" class="modal">
       <form class="content animate" action="/login" method="post">
-        <div class="imgcontainer">
+          <div class="imgcontainer">
           <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
-        </div>
-
+      </div>
         <div class="container">
           <label for="uname"><b>Username</b></label>
           <input type="text" placeholder="Enter Username" name="uname" required>
@@ -113,9 +118,6 @@
           <button type="submit">Login</button>
         </div>
 
-        <div class="container" style="background-color:#f1f1f1">
-          <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
-        </div>
       </form>
     </div>
   <!-- create window -->
@@ -131,6 +133,24 @@
 
           <button type="submit">Create</button>
         </div>
+      </form>
+    </div>
+  <!-- signin window -->
+  <div id="id03" class="modal">
+      <form class="content animate" action="/signup" method="post">
+          <div class="imgcontainer">
+          <span onclick="document.getElementById('id03').style.display='none'" class="close" title="Close Modal">&times;</span>
+      </div>
+        <div class="container">
+          <label for="uname"><b>Username</b></label>
+          <input type="text" placeholder="Enter Username" name="uname" required>
+
+          <label for="psw"><b>Password</b></label>
+          <input type="password" placeholder="Enter Password" name="psw" required>
+
+          <button type="submit">Sign Up</button>
+        </div>
+
       </form>
     </div>
   <script src={{ url_for('static', filename='lobby.js')}}> </script>
