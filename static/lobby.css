@@ -5,12 +5,17 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+div {
+  margin: auto;
+}
+
 room-list {
     height: 60%;
 }
 
 .room-list-area {
-  background-color: white;
+  background-color: #99c4d1;
+  opacity: 0.9;
 }
 
 input[type=text], input[type=password] {

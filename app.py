@@ -1,3 +1,5 @@
+import random
+
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, send, emit
 from flask_sock import Sock
@@ -49,8 +51,9 @@ def index():  # put application's code here
 #             send(json.dumps(["end", ret_game_states]))
 #         send(json.dumps(["game", {"roll_num": roll_num, "user": ret_game_states}, game_engine.alert_status]), broadcast=True)
 
+
 @socketio.on("login", namespace="/")
-def signup_test(json):
+def signup(json):
     print("login")
     username = json["username"]
     password = json["password"]
@@ -59,8 +62,9 @@ def signup_test(json):
     feedback = {"username": username, "status": "true"}
     emit('login', feedback)
 
+
 @socketio.on("signup", namespace="/")
-def signup_test(json):
+def signup(json):
     print("signup")
     username = json["username"]
     password = json["password"]
@@ -70,6 +74,11 @@ def signup_test(json):
     emit('signup', feedback)
 
 
+@socketio.on("create", namespace="/")
+def create(message):
+    print(message)
+    message["room_num"] = str(random.randint(0, 100))
+    emit('create', json.dumps(message))
 
 # def password_confirm(username, input_password):
 #     for user in game_engine.users_info:
