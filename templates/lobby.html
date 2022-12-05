@@ -22,7 +22,7 @@
 
   <div class="container">
       <div class="row">
-          <div class="col-md-4" id="welcome-intro"><h3>Welcome back, {{user}}！</h3></div>
+          <div class="col-md-4" id="welcome-intro"><h3 id="welcome">Welcome！</h3></div>
             <!-- login in-->
           <div class="col-md-1" id="login-bottom">
               <button class = "button" onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Login</button>
@@ -104,21 +104,21 @@
   </div>
  <!-- login window -->
   <div id="id01" class="modal">
-      <form class="content animate">
+      <div class="content animate">
           <div class="imgcontainer">
           <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
       </div>
         <div class="container">
           <label for="uname"><b>Username</b></label>
-          <input type="text" placeholder="Enter Username" name="uname" required>
+          <input type="text" id="signin_username" placeholder="Enter Username" name="uname" required>
 
           <label for="psw"><b>Password</b></label>
-          <input type="password" placeholder="Enter Password" name="psw" required>
+          <input type="password" id="signin_password" placeholder="Enter Password" name="psw" required>
 
-          <button id="Login" value="Login">Login</button>
+          <button id="Login" value="Login" onclick="document.getElementById('id01').style.display='none'" >Login</button>
         </div>
 
-      </form>
+    </div>
     </div>
   <!-- create window -->
   <div id="id02" class="modal">
@@ -135,7 +135,7 @@
         </div>
       </form>
     </div>
-  <!-- signin window -->
+  <!-- signup window -->
   <div id="id03" class="modal">
       <div class="content animate">
           <div class="imgcontainer">
@@ -148,7 +148,7 @@
           <label for="psw"><b>Password</b></label>
           <input type="password" placeholder="Enter Password" name="psw" id="signup_password" required>
 
-          <button id="SignUp" value="SignUp">Sign Up</button>
+          <button id="SignUp" value="SignUp" onclick="document.getElementById('id03').style.display='none'" >Sign Up</button>
         </div>
 
       </div>
