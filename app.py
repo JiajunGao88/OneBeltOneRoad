@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, send, emit
-from flask_sock import Sock
 import json
 from pymongo import MongoClient
+import cookie_engine
 
 import game_engine
 
@@ -10,6 +10,10 @@ import game_engine
 mongo_client = MongoClient("mongo")
 db = mongo_client["proj"]
 users_info_collection = db["users_info"]
+users_account = db["users_account"]
+cookies_collection = db["cookies_collection"]
+game_collection = db["game_collection"]
+
 app = Flask(__name__, static_url_path="/static")
 app.config['SECRET'] = "secret!123"
 socketio = SocketIO(app, cors_allowed_origins="*")
@@ -56,8 +60,16 @@ def signup_test(json):
     password = json["password"]
     print("username is: " + username)
     print("password is: " + password)
-    feedback = {"username": username, "status": "true"}
-    emit('login', feedback)
+
+    password_se = cookie_engine.encry(password)
+    # check if the user in db
+    exist_user = users_account.find_one({"username":username, "password":password_se})
+    if exist_user == None:
+        feedback = {"status": "False", "username": username}
+        emit('login',feedback)
+    else:
+        feedback = {"status": "True", "username": username}
+        emit('login', feedback)
 
 @socketio.on("signup", namespace="/")
 def signup_test(json):
@@ -66,8 +78,20 @@ def signup_test(json):
     password = json["password"]
     print("username is: " + username)
     print("password is: " + password)
-    feedback = {"status": "true"}
-    emit('signup', feedback)
+    # feedback = {"status": "true"}
+    # emit('signup', feedback)
+
+    # store user into user collection
+    # check if user in collection
+    exist_user = users_account.find_one({"username":username})
+    if exist_user != None:
+        feedback = {"status": "False", "username": username}
+        emit('signup',feedback)
+    else:
+        password_se = cookie_engine.encry(password)
+        users_account.insert_one({"username":username, "password":password_se})
+        feedback = {"status": "True", "username": username}
+        emit('signup',feedback)
 
 
 
@@ -82,8 +106,8 @@ def signup_test(json):
 
 if __name__ == '__main__':
     # from waitress import serve
-    # app.run(host="0.0.0.0", port=5000)
-    socketio.run(app)
+    app.run(host="0.0.0.0", port=5000)
+    # socketio.run(app)
 
 
 
