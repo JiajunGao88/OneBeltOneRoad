@@ -13,6 +13,7 @@ db = mongo_client["proj"]
 users_info_collection = db["users_info"]
 
 users_account = db["users_account"]
+users_test_account = db["users_account"]
 cookies_collection = db["cookies_collection"]
 game_collection = db["game_collection"]
 
@@ -32,7 +33,7 @@ def game():  # put application's code here
 @socketio.on('message')
 def handle_message(message):
     if "ranking request" in message:
-        ranking = list(users_account.find({}, {"_id":0, "password":0, "salt":0}))
+        ranking = list(users_test_account.find({}, {"_id":0, "password":0, "salt":0}))
         emit('ranking',ranking)
 
 @socketio.on('message', namespace='/game')
@@ -70,7 +71,7 @@ def signup_test(json):
     print("password is: " + password)
 
     # check if the user in db
-    exist_user = users_account.find_one({"username":username})
+    exist_user = users_test_account.find_one({"username":username})
     if exist_user == None:
         feedback = {"status": "False", "username": username}
         emit('login',feedback)
@@ -96,13 +97,13 @@ def signup_test(json):
 
     # store user into user collection
     # check if user in collection
-    exist_user = users_account.find_one({"username":username})
+    exist_user = users_test_account.find_one({"username":username})
     if exist_user != None:
         feedback = {"status": "False", "username": username}
         emit('signup',feedback)
     else:
         salt, password_se = cookie_engine.encry(password)
-        users_account.insert_one({"username":username, "password":password_se, "salt":salt, "won":"0", "games":"0"})
+        users_test_account.insert_one({"username":username, "password":password_se, "salt":salt, "won":"0", "games":"0"})
         feedback = {"status": "True", "username": username}
         emit('signup',feedback)
 
