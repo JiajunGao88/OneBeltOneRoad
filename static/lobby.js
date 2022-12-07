@@ -5,6 +5,7 @@ $(document).ready(function() {
     // request ranking
     socket.send("ranking request");
 
+    // ranking table
     socket.on('ranking', function(data) {
         ranking_list = data;
         
@@ -18,6 +19,7 @@ $(document).ready(function() {
 
     })
 
+    // login
     socket.on('login', function(data) {
         console.log(data["status"]);
         if (data["status"] === "True") {
@@ -32,6 +34,7 @@ $(document).ready(function() {
             alert("Username or Password is wrong, please try again!");
         }
     });
+    // sign up
     socket.on('signup', function(data) {
         console.log(data["status"]);
         if (data["status"] === "False") {
@@ -40,6 +43,7 @@ $(document).ready(function() {
             alert("Sign up successfully, please log in.");
         }
     })
+    // create
     socket.on('create', function(data) {
         console.log(data);
         const room_info = JSON.parse(data);
@@ -47,6 +51,7 @@ $(document).ready(function() {
         room_creation(room_info["room_num"], room_info["room-name"]);
     })
 
+    // create send to server
     // After Game Room Creation, adding into Game Romes
     $("#Create").click(function () {
         if ($("#auth_token").val() === "") {
@@ -80,7 +85,8 @@ $(document).ready(function() {
         room.append($("<div>").attr({"class": "col-md-3"}).append($("<h4>").text(room_num)));
         room.append($("<div>").attr({"class": "col-md-4",}).append($("<h4>").text(room_name)));
         room.append($("<div>").attr({"class": "col-md-1",}).append($("<h4>").text("0/4")));
-        room.append($("<div>").attr({"class": "col-md-3",}).append($("<button>").text("join")));
+        room.append($("<div>").attr({"class": "col-md-3 offset-md-1", "id": "button_area" + room_num}));
+        $('#button_area' + room_num).append($('<form>').attr({"action": "/game"}).append($('<button>').attr({"class": "join", "id": room_num}).text("join")));
     }
 
 })

@@ -25,9 +25,9 @@ def index():  # put application's code here
     # users_account.drop()
     return render_template("lobby.html")
 
-# @app.route('/')
-# def index():  # put application's code here
-#     return render_template("index.html", amount_ready=str(len(game_engine.ready_list)))
+@app.route('/game')
+def game():  # put application's code here
+    return render_template("index.html", amount_ready=str(len(game_engine.ready_list)))
 
 @socketio.on('message')
 def handle_message(message):
