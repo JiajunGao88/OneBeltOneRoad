@@ -114,6 +114,16 @@ span.psw {
   animation: animatezoom 0.6s
 }
 
+.rank {
+  height: 80%;
+  width: 20%;
+  border: solid 3px orange;
+  border-radius: 5%;
+  position: absolute;
+  margin: 0 0 0 60%;
+  background-color: white;
+}
+
 @-webkit-keyframes animatezoom {
   from {-webkit-transform: scale(0)}
   to {-webkit-transform: scale(1)}

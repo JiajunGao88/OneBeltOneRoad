@@ -3,6 +3,7 @@ from flask_socketio import SocketIO, send, emit
 import json
 from pymongo import MongoClient
 import cookie_engine
+import random
 
 import game_engine
 
@@ -10,6 +11,7 @@ import game_engine
 mongo_client = MongoClient("mongo")
 db = mongo_client["proj"]
 users_info_collection = db["users_info"]
+
 users_account = db["users_account"]
 cookies_collection = db["cookies_collection"]
 game_collection = db["game_collection"]
@@ -20,12 +22,18 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 
 @app.route('/')
 def index():  # put application's code here
+    # users_account.drop()
     return render_template("lobby.html")
 
 # @app.route('/')
 # def index():  # put application's code here
 #     return render_template("index.html", amount_ready=str(len(game_engine.ready_list)))
 
+@socketio.on('message')
+def handle_message(message):
+    if "ranking request" in message:
+        ranking = list(users_account.find({}, {"_id":0, "password":0}))
+        emit('ranking',ranking)
 
 # @socketio.on('message')
 # def handle_message(message):
@@ -89,9 +97,16 @@ def signup_test(json):
         emit('signup',feedback)
     else:
         password_se = cookie_engine.encry(password)
-        users_account.insert_one({"username":username, "password":password_se})
+        users_account.insert_one({"username":username, "password":password_se, "won":"0", "games":"0"})
         feedback = {"status": "True", "username": username}
         emit('signup',feedback)
+
+@socketio.on("create", namespace="/")
+def create(message):
+    print(message)
+    message["room_num"] = str(random.randint(0, 100))
+    emit('create', json.dumps(message))
+
 
 
 
