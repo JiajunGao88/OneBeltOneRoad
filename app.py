@@ -32,34 +32,34 @@ def game():  # put application's code here
 @socketio.on('message')
 def handle_message(message):
     if "ranking request" in message:
-        ranking = list(users_account.find({}, {"_id":0, "password":0}))
+        ranking = list(users_account.find({}, {"_id":0, "password":0, "salt":0}))
         emit('ranking',ranking)
 
-# @socketio.on('message')
-# def handle_message(message):
-#     # print("Received message: " + message)
-#     game_engine.alert_status = []
-#     if "User connected!" in message:
-#         game_engine.users.append(int(message.split(":")[0]))
-#         # print("Connect Successful")
-#     elif "User ready!" in message:
-#         user_id = int(message.split(":")[0])
-#         if user_id not in game_engine.ready_list:
-#             game_engine.ready_list.append(user_id)
-#             send(json.dumps(["ready", game_engine.ready_list]), broadcast=True)
-#         if len(game_engine.ready_list) == 4:
-#             for i in range(0, len(game_engine.ready_list)):
-#                 game_engine.users_info[i]["user_id"] = game_engine.ready_list[i]
-#                 game_engine.users = game_engine.ready_list
-#             send(json.dumps(["start", {"roll_num": 1, "user": game_engine.users_info}]), broadcast=True)
-#     else:
-#         term_info = json.loads(message)
-#         roll_num = game_engine.roll_dice()
-#         ret_game_states = game_engine.game_func(term_info, roll_num)
-#         if type(ret_game_states) == str:
-#             # users_info_collection.delete_one({"datatype": "status"})
-#             send(json.dumps(["end", ret_game_states]))
-#         send(json.dumps(["game", {"roll_num": roll_num, "user": ret_game_states}, game_engine.alert_status]), broadcast=True)
+@socketio.on('message', namespace='/game')
+def handle_message(message):
+    # print("Received message: " + message)
+    game_engine.alert_status = []
+    if "User connected!" in message:
+        game_engine.users.append(int(message.split(":")[0]))
+        # print("Connect Successful")
+    elif "User ready!" in message:
+        user_id = int(message.split(":")[0])
+        if user_id not in game_engine.ready_list:
+            game_engine.ready_list.append(user_id)
+            send(json.dumps(["ready", game_engine.ready_list]), broadcast=True)
+        if len(game_engine.ready_list) == 4:
+            for i in range(0, len(game_engine.ready_list)):
+                game_engine.users_info[i]["user_id"] = game_engine.ready_list[i]
+                game_engine.users = game_engine.ready_list
+            send(json.dumps(["start", {"roll_num": 1, "user": game_engine.users_info}]), broadcast=True)
+    else:
+        term_info = json.loads(message)
+        roll_num = game_engine.roll_dice()
+        ret_game_states = game_engine.game_func(term_info, roll_num)
+        if type(ret_game_states) == str:
+            # users_info_collection.delete_one({"datatype": "status"})
+            send(json.dumps(["end", ret_game_states]))
+        send(json.dumps(["game", {"roll_num": roll_num, "user": ret_game_states}, game_engine.alert_status]), broadcast=True)
 
 @socketio.on("login", namespace="/")
 def signup_test(json):
@@ -69,15 +69,20 @@ def signup_test(json):
     print("username is: " + username)
     print("password is: " + password)
 
-    password_se = cookie_engine.encry(password)
     # check if the user in db
-    exist_user = users_account.find_one({"username":username, "password":password_se})
+    exist_user = users_account.find_one({"username":username})
     if exist_user == None:
         feedback = {"status": "False", "username": username}
         emit('login',feedback)
     else:
-        feedback = {"status": "True", "username": username}
-        emit('login', feedback)
+        salt = exist_user["salt"]
+        password_se = cookie_engine.disencry(password, salt)
+        if password_se != exist_user["password"]:
+            feedback = {"status": "False", "username": username}
+            emit('login',feedback)
+        else:
+            feedback = {"status": "True", "username": username}
+            emit('login', feedback)
 
 @socketio.on("signup", namespace="/")
 def signup_test(json):
@@ -96,8 +101,8 @@ def signup_test(json):
         feedback = {"status": "False", "username": username}
         emit('signup',feedback)
     else:
-        password_se = cookie_engine.encry(password)
-        users_account.insert_one({"username":username, "password":password_se, "won":"0", "games":"0"})
+        salt, password_se = cookie_engine.encry(password)
+        users_account.insert_one({"username":username, "password":password_se, "salt":salt, "won":"0", "games":"0"})
         feedback = {"status": "True", "username": username}
         emit('signup',feedback)
 

@@ -25,7 +25,7 @@ def roll_dice():
     return num
 
 
-def game_func(term_info, steps, users):
+def game_func(term_info, steps):
     # steps = term_info["step"]
     termOfUsers = users.index(term_info["user"])
     users_info[termOfUsers]["location"] += steps

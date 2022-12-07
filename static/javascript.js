@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    var socket = io.connect("http://localhost:5000/2231516qweq");
+    var socket = io.connect("http://localhost:5000/game");
     let socket_id = Math.floor(Math.random() * 100);
     socket.on('connect', function() {
         // console.log(socket_id)

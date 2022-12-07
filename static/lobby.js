@@ -2,8 +2,6 @@ $(document).ready(function() {
     $("#logout").hide();
     $("#rank").hide();
     var socket = io.connect("http://localhost:5000");
-    // request ranking
-    socket.send("ranking request");
 
     // ranking table
     socket.on('ranking', function(data) {
@@ -27,6 +25,9 @@ $(document).ready(function() {
             $("#welcome").text(welcome_words);
             $("#auth_token").val("12345678910");
             // console.log($("#auth_token").val());
+            // request ranking
+            socket.send("ranking request");
+
             $(".login_signup").hide();
             $("#logout").show();
             $("#rank").show();
