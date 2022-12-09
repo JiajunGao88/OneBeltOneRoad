@@ -16,10 +16,9 @@ users_info = [{"location": 0, "status": False, "term": True},
 
 alert_status = []
 
-
 ready_list = []
 users = []
-
+dic_users = []
 
 def roll_dice():
     num = random.randint(1, 6)
@@ -49,7 +48,8 @@ def game_func(term_info, steps):
         else:
             users_info[termOfUsers % 4]["term"] = True
             break
-    app.users_info_collection.update_one({"datatype": "status"}, {"$set": {"users": users_info}})
+    
+    # app.users_info_collection.update_one({"datatype": "status"}, {"$set": {"users": users_info}})
     return users_info
 
 
