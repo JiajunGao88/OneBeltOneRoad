@@ -1,11 +1,22 @@
 $(document).ready(function() {
     var socket = io.connect("http://localhost:5000/game");
     let socket_id = Math.floor(Math.random() * 100);
+    let username;
     socket.on('connect', function() {
         // console.log(socket_id)
         $(".dice-button").hide();
-        // socket.send(socket_id.toString() + ": User connected!");
+        username = $("#username").val();
+        console.log(username)
+        socket.emit("join", {"room": $("#room").val(), "username": username});
     });
+    socket.on("join", function(data) {
+        console.log(data);
+        var username = $("#username_val_" + data["players"].toString());
+        if (username.text() === "") {
+            username.text(data["username"]);
+        }
+    })
+
     socket.on('message', function(data) {
         const gameStatus = JSON.parse(data)[0];
         const ret_mes = JSON.parse(data)[1];
@@ -17,7 +28,6 @@ $(document).ready(function() {
                 $(".dice-button").show();
             }
             let alert_mess = JSON.parse(data)[2];
-            // console.log(alert_mess)
             if (alert_mess.length !== 0 && alert_mess[0] === socket_id) {
                 alert_spec_status(alert_mess[1]);
             }
@@ -48,18 +58,6 @@ $(document).ready(function() {
         socket.send(socket_id.toString() + ": User ready!");
     })
 
-    // $("#complete_signin").click(function () {
-    //     signin_name = $("#signin_username").val();
-    //     signin_password = $("#signin_password").val();
-    //     // $("#login").hide();
-    //     socket.send(socket_id.toString() + ":sign in:" + signin_name + ":" + signin_password);
-    // })
-    // $("#complete_signup").click(function () {
-    //     signup_name = $("#signup_username").val();
-    //     signup_password = $("#signup_password").val();
-    //     socket.send(socket_id.toString() + ":sign up:" + signup_name + ":" + signup_password);
-    // })
-
     // ---------- DICE START HERE ----------
     $(".dice-button").click(function (){
         socket.send(JSON.stringify({'user':  socket_id}));
@@ -78,20 +76,20 @@ $(document).ready(function() {
 
     }
 
-    function alert_spec_status(mes) {
-        if (typeof mes !== "number") {
-            let base_sent = "you reach " + mes[0] +", and you are moved from " + mes[0] + " to " + mes[1] + ".";
-            console.log(base_sent);
-            if (mes[0] < mes[1]) {
-                alert("Fortunately, " + base_sent);
-            } else {
-                alert("Unfortunately, " + base_sent);
-            }
-        } else {
-             alert("Enjoy your view for one round.");
-        }
-
-    }
+    // function alert_spec_status(mes) {
+    //     if (typeof mes !== "number") {
+    //         let base_sent = "you reach " + mes[0] +", and you are moved from " + mes[0] + " to " + mes[1] + ".";
+    //         console.log(base_sent);
+    //         if (mes[0] < mes[1]) {
+    //             alert("Fortunately, " + base_sent);
+    //         } else {
+    //             alert("Unfortunately, " + base_sent);
+    //         }
+    //     } else {
+    //          alert("Enjoy your view for one round.");
+    //     }
+    //
+    // }
 
     function refresh_items() {
         $(".dice-button").hide();

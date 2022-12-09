@@ -48,8 +48,6 @@ def game_func(term_info, steps):
         else:
             users_info[termOfUsers % 4]["term"] = True
             break
-    
-    # app.users_info_collection.update_one({"datatype": "status"}, {"$set": {"users": users_info}})
     return users_info
 
 

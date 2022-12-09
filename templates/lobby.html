@@ -21,6 +21,7 @@
   </div>
   <!-- token -->
     <input id="auth_token" name="auth" hidden>
+    <input id="username" name="username" hidden>
     <!-- token end -->
 
   <div class="container">
@@ -69,8 +70,22 @@
                                     <div class="col-md-4"> <h4>asdasd</h4> </div>
                                     <div class="col-md-1"> <h4>0/4</h4> </div>
                                     <div class="col-md-3 offset-md-1" id="button_area">
-                                        <form action="/game">
-                                            <button class="join" id="99">join</button>
+                                        <form action="/game" method="post" enctype="multipart/form-data">
+                                            <input id="username" name="username" hidden>
+                                            <input id="room" name="room" value="5" hidden>
+                                            <button type="submit" class="join">join</button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3"> <h4>99</h4> </div>
+                                    <div class="col-md-4"> <h4>asdasdaa</h4> </div>
+                                    <div class="col-md-1"> <h4>0/4</h4> </div>
+                                    <div class="col-md-3 offset-md-1" id="button_area">
+                                        <form action="/game" method="post" enctype="multipart/form-data">
+                                            <input id="username" name="username" hidden>
+                                            <input id="room" name="room" value="99" hidden>
+                                            <button type="submit" class="join">join</button>
                                         </form>
                                     </div>
                                 </div>

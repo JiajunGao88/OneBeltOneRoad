@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
-from flask_socketio import SocketIO, send, emit
-import json
+from flask_socketio import SocketIO, send, emit, join_room
+import json, sys
 from pymongo import MongoClient
 import cookie_engine
 import random
@@ -24,11 +24,32 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 @app.route('/')
 def index():  # put application's code here
     # users_account.drop()
-    return render_template("lobby.html")
+    return render_template("lobby.html") #fix
 
-@app.route('/game')
+@app.route('/game', methods=['POST'])
 def game():  # put application's code here
-    return render_template("index.html", amount_ready=str(len(game_engine.ready_list)))
+    print(request.form['username'])
+    db_data = game_collection.find_one({"room-num": str(request.form['room'])})
+    print(db_data)
+    users_info = db_data["users_info"]
+    players = int(db_data["num_players"]) + 1
+    for i in range(0, 4):
+        if users_info[i]["username"] == "":
+            users_info[i]["username"] = request.form['username']
+            break
+    print(users_info)
+    game_collection.update_one({"room-num": str(request.form['room'])}, {"$set": {"num_players": players, "users_info": users_info}})
+    sys.stdout.flush()
+    sys.stderr.flush()
+    return render_template("index.html",
+                           username1=users_info[0]["username"],
+                           username2=users_info[1]["username"],
+                           username3=users_info[2]["username"],
+                           username4=users_info[3]["username"],
+                           amount_ready=str(len(game_engine.ready_list)),
+                           room=str(request.form['room']),
+                           username=request.form['username'])
+
 
 @socketio.on('message')
 def handle_message(message):
@@ -38,12 +59,12 @@ def handle_message(message):
 
 @socketio.on('message', namespace='/game')
 def handle_message(message):
-    # print("Received message: " + message)
+    print("Received message: " + message)
     game_engine.alert_status = []
-    if "User connected!" in message:
-        game_engine.users.append(int(message.split(":")[0]))
-        # print("Connect Successful")
-    elif "User ready!" in message:
+    # if "User connected!" in message:
+    #     game_engine.users.append(int(message.split(":")[0]))
+    #     # print("Connect Successful")
+    if "User ready!" in message:
         user_id = int(message.split(":")[0])
         if user_id not in game_engine.ready_list:
             game_engine.ready_list.append(user_id)
@@ -61,6 +82,8 @@ def handle_message(message):
             # users_info_collection.delete_one({"datatype": "status"})
             send(json.dumps(["end", ret_game_states]))
         send(json.dumps(["game", {"roll_num": roll_num, "user": ret_game_states}, game_engine.alert_status]), broadcast=True)
+    sys.stdout.flush()
+    sys.stderr.flush()
 
 @socketio.on("login", namespace="/")
 def signup_test(json):
@@ -105,15 +128,47 @@ def signup_test(json):
         salt, password_se = cookie_engine.encry(password)
         users_test_account.insert_one({"username":username, "password":password_se, "salt":salt, "won":"0", "games":"0"})
         feedback = {"status": "True", "username": username}
-        emit('signup',feedback)
+        emit('signup', feedback)
+
 
 @socketio.on("create", namespace="/")
 def create(message):
     print(message)
     message["room_num"] = str(random.randint(0, 100))
-    emit('create', json.dumps(message))
+    while game_collection.find_one({"room-num": message["room_num"]}) is not None:
+        message["room_num"] = str(random.randint(0, 100))
+    users_info = [{"username": "", "location": 0, "status": False, "term": True},
+                  {"username": "", "location": 0, "status": False, "term": False},
+                  {"username": "", "location": 0, "status": False, "term": False},
+                  {"username": "", "location": 0, "status": False, "term": False}]
+    room = {"room-num": message["room_num"],
+            "room-name": message["room-name"],
+            "game-start": "False",
+            "num_players": 0,
+            "roll-num": 1,
+            "users_info": users_info}
+    game_collection.insert_one(room)
+    print(room)
+    emit('create', json.dumps(message), broadcast=True)
 
 
+@socketio.on('connect', namespace="/game")
+def connect():
+    print("connect!")
+    emit("connect", "Client received data!")
+
+
+@socketio.on('join', namespace="/game")
+def on_join(data):
+    print(data)
+    username = data['username']
+    room = data['room']
+    db_data = game_collection.find_one({"room-num": room})
+    players = db_data["num_players"]
+    join_room(room)
+    emit("join", {"username": username, "players": players}, to=room)
+    sys.stdout.flush()
+    sys.stderr.flush()
 
 
 # def password_confirm(username, input_password):
@@ -128,6 +183,7 @@ def create(message):
 if __name__ == '__main__':
     # from waitress import serve
     app.run(host="0.0.0.0", port=5000)
+
     # socketio.run(app)
 
 

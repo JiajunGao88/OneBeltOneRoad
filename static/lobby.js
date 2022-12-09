@@ -6,7 +6,6 @@ $(document).ready(function() {
     // ranking table
     socket.on('ranking', function(data) {
         ranking_list = data;
-        
         let text = "<table width='100%'><tr><th>User</th><th>Won</th><th>Game</th></tr>";
         for (let i = 0; i < data.length; i++) {
             let row = "<tr><td>" + data[i]["username"] + "</td><td>" + data[i]["won"] + "</td><td>" + data[i]["games"] + "</td></tr>";
@@ -24,7 +23,8 @@ $(document).ready(function() {
             let welcome_words = "Welcome, " + data["username"] + "!";
             $("#welcome").text(welcome_words);
             $("#auth_token").val("12345678910");
-            // console.log($("#auth_token").val());
+            $("#username").val(data["username"]);
+            console.log($("#username").val());
             // request ranking
             socket.send("ranking request");
 
@@ -86,8 +86,16 @@ $(document).ready(function() {
         room.append($("<div>").attr({"class": "col-md-3"}).append($("<h4>").text(room_num)));
         room.append($("<div>").attr({"class": "col-md-4",}).append($("<h4>").text(room_name)));
         room.append($("<div>").attr({"class": "col-md-1",}).append($("<h4>").text("0/4")));
+        let username = $("#username").val();
+        console.log(username);
+        var form = $('<form>').attr({"action": "/game", "method": "post", "enctype": "\"multipart/form-data\""});
+        form.append($('<input>').attr({"id": "username", "name": "username", "value": username, "hidden": "true"}));
+        form.append($('<input>').attr({"id": "room", "name": "room", "value": room_num, "hidden": "true"}));
+        form.append($('<button>').attr({"type": "submit", "class": "join"}).text("join"));
         room.append($("<div>").attr({"class": "col-md-3 offset-md-1", "id": "button_area" + room_num}));
-        $('#button_area' + room_num).append($('<form>').attr({"action": "/game"}).append($('<button>').attr({"class": "join", "id": room_num}).text("join")));
+        $('#button_area' + room_num).append(form);
+        // room.append($("<div>").attr({"class": "col-md-3 offset-md-1", "id": "button_area" + room_num}));
+        // $('#button_area' + room_num).append($('<form>').attr({"action": "/game"}).append($('<button>').attr({"class": "join", "id": room_num}).text("join")));
     }
 
 })
