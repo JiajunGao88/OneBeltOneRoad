@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=1920px, height=1080px, initial-scale=1.0">
+    <title>World Travel</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename= 'lobby.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename= 'bootstrap.min.css')}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.2.0/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+</head>
+
+<body>
+  <div id="header">
+    <center>
+      <h1 id="header_font">World Travel</h1>
+    </center>
+  </div>
+  <!-- token -->
+    <input id="auth_token" name="auth" hidden>
+    <!-- token end -->
+
+  <div class="container">
+    <!-- ranking start-->
+    <div id="rank"></div>
+    <!-- ranking end -->
+      <div class="row">
+          <div class="col-md-3" id="welcome-intro"><h3 id="welcome">Please login! </h3></div>
+            <!-- login in-->
+          <div class="col-md-1" id="login-bottom">
+              <button class = "button login_signup" onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Login</button>
+              <button class = "button" id="logout" style="width:auto;">Logout</button>
+          </div>
+           <!-- sign up -->
+            <div class="col-md-2">
+                <button class = "button login_signup" onclick="document.getElementById('id03').style.display='block'" style="width:auto;"><span>Sign Up</span></button>
+            </div>
+      </div>
+      <br>
+      <br>
+      <div class="row">
+          <div class="col-md-8 room-list">
+              <div class="container">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <h3><b>Game Rooms List</b></h3>
+                        </div>
+                        <div class="col-md-3 offset-md-1">
+                            <button class = "button" onclick="document.getElementById('id02').style.display='block'" style="width:auto;"><span>&#43;</span></button>
+                        </div>
+
+                    </div>
+                    <br>
+                    <br>
+                    <div class="row">
+                        <div class = "col-md-12 room-list-area" style="border: 4px solid black; height: 400px">
+                            <div class="container-fluid room-list-box" id="room-list-box" style="overflow-y: scroll; height: 85%">
+                                <!-- room -->
+                                <div class="row">
+                                    <div class="col-md-3"> <h4>room number</h4> </div>
+                                    <div class="col-md-4"> <h4>room name</h4> </div>
+                                    <div class="col-md-1"> <h4>num player</h4> </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3"> <h4>5</h4> </div>
+                                    <div class="col-md-4"> <h4>asdasd</h4> </div>
+                                    <div class="col-md-1"> <h4>0/4</h4> </div>
+                                    <div class="col-md-3 offset-md-1" id="button_area">
+                                        <form action="/game">
+                                            <button class="join" id="99">join</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+          </div>
+          <!-- live chatting window -->
+          <div class="col-md-3 chat-list">
+
+          </div>
+      </div>
+  </div>
+ <!-- login window -->
+  <div id="id01" class="modal">
+      <div class="content animate">
+          <div class="imgcontainer">
+          <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+      </div>
+        <div class="container">
+          <label for="uname"><b>Username</b></label>
+          <input type="text" id="signin_username" placeholder="Enter Username" name="uname" required>
+
+          <label for="psw"><b>Password</b></label>
+          <input type="password" id="signin_password" placeholder="Enter Password" name="psw" required>
+
+          <button id="Login" value="Login" onclick="document.getElementById('id01').style.display='none'" >Login</button>
+        </div>
+
+    </div>
+    </div>
+  <!-- create window -->
+  <div id="id02" class="modal">
+      <div class="content animate">
+        <div class="imgcontainer">
+          <span onclick="document.getElementById('id02').style.display='none'" class="close" title="Close Modal">&times;</span>
+        </div>
+
+        <div class="container">
+          <label for="room-name"><b>Username</b></label>
+          <input type="text" placeholder="Enter room name" name="room-name" id="room-name" required>
+
+          <button id="Create" value="Create" onclick="document.getElementById('id02').style.display='none'" >Create</button>
+        </div>
+      </div>
+    </div>
+  <!-- signup window -->
+  <div id="id03" class="modal">
+      <div class="content animate">
+          <div class="imgcontainer">
+          <span onclick="document.getElementById('id03').style.display='none'" class="close" title="Close Modal">&times;</span>
+      </div>
+        <div class="container">
+          <label for="uname"><b>Username</b></label>
+          <input type="text" placeholder="Enter Username" name="uname" id="signup_username" required>
+
+          <label for="psw"><b>Password</b></label>
+          <input type="password" placeholder="Enter Password" name="psw" id="signup_password" required>
+
+          <button id="SignUp" value="SignUp" onclick="document.getElementById('id03').style.display='none'" >Sign Up</button>
+        </div>
+
+      </div>
+    </div>
+  <script src={{ url_for('static', filename='lobby.js')}}> </script>
+</body>
+
+</html>

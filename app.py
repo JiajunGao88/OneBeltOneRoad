@@ -17,8 +17,7 @@ users_test_account = db["users_account"]
 cookies_collection = db["cookies_collection"]
 game_collection = db["game_collection"]
 
-
-app = Flask(__name__, static_url_path="/docs/static")
+app = Flask(__name__, static_url_path="/static")
 app.config['SECRET'] = "secret!123"
 socketio = SocketIO(app, cors_allowed_origins="*")
 
