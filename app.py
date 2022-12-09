@@ -18,8 +18,9 @@ users_test_account = db["users_account"]
 cookies_collection = db["cookies_collection"]
 game_collection = db["game_collection"]
 
-dir_path = os.getcwd()
-app = Flask(__name__, static_url_path="/static", template_folder= dir_path)
+#dir_path = os.getcwd()
+#app = Flask(__name__, static_url_path="/static", template_folder= dir_path)
+app = Flask(__name__, static_url_path="/static")
 app.config['SECRET'] = "secret!123"
 socketio = SocketIO(app, cors_allowed_origins="*")
 
