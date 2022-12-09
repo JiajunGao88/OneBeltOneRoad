@@ -24,7 +24,34 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 @app.route('/')
 def index():  # put application's code here
     # users_account.drop()
-    return render_template("lobby.html") #fix
+    room_list = list(game_collection.find({}, {'_id': 0}))
+    send_list = []
+    for i in room_list:
+        if i["game-start"] == "False":
+            break
+        num_user = 0
+        for j in room_list["users_info"]:
+            if j[0]["username"] != "":
+                num_user += 1
+        num_user_str = str(num_user) + "/4"
+        send_list.append({"m":i["room-num"], "n":i["room-name"], "p":num_user_str})
+
+    list_str = ''
+    for i in send_list:
+        c0 = '<div class="row" id="' + i["m"] + '">'
+        c1 = '<div class="col-md-3"> <h4>' + i["m"] + '</h4> </div>'
+        c2 = '<div class="col-md-4"> <h4>' + i["n"] + '</h4> </div>'
+        c3 = '<div class="col-md-1"> <h4>' + i["p"] + '</h4> </div>'
+        c4 = '<div class="col-md-3 offset-md-1" id="button_area' + i["m"] + '">'
+        c4 += '<form action="/game" method="post" enctype="multipart/form-data">'
+        c4 += '<input id="", "name": "", "value": "", hidden>'
+        c4 += '<input id="room", name="room", value=' + i["m"] + ' hidden>'
+        c4 += '<button type="submit", class="join">Join</button>'
+
+    if list_str != '':
+        list_str += '</form></div></div>'
+        
+    return render_template("lobby.html", list_rooms = list_str)
 
 @app.route('/game', methods=['POST'])
 def game():  # put application's code here

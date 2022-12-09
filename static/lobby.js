@@ -2,6 +2,11 @@ $(document).ready(function() {
     $("#logout").hide();
     $("#rank").hide();
     var socket = io.connect("http://localhost:5000");
+    let current_user = ""
+
+    // get the room list from server or database
+    let get_list = $("#from_app").val();
+    $("#room-list-box").append(get_list)
 
     // ranking table
     socket.on('ranking', function(data) {
@@ -24,6 +29,7 @@ $(document).ready(function() {
             $("#welcome").text(welcome_words);
             $("#auth_token").val("12345678910");
             $("#username").val(data["username"]);
+            current_user = data["username"]
             console.log($("#username").val());
             // request ranking
             socket.send("ranking request");
@@ -88,10 +94,12 @@ $(document).ready(function() {
         room.append($("<div>").attr({"class": "col-md-1",}).append($("<h4>").text("0/4")));
         let username = $("#username").val();
         console.log(username);
+
         var form = $('<form>').attr({"action": "/game", "method": "post", "enctype": "\"multipart/form-data\""});
         form.append($('<input>').attr({"id": "username", "name": "username", "value": username, "hidden": "true"}));
         form.append($('<input>').attr({"id": "room", "name": "room", "value": room_num, "hidden": "true"}));
         form.append($('<button>').attr({"type": "submit", "class": "join"}).text("join"));
+
         room.append($("<div>").attr({"class": "col-md-3 offset-md-1", "id": "button_area" + room_num}));
         $('#button_area' + room_num).append(form);
         // room.append($("<div>").attr({"class": "col-md-3 offset-md-1", "id": "button_area" + room_num}));
