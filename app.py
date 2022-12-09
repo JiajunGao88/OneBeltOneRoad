@@ -4,6 +4,7 @@ import json
 from pymongo import MongoClient
 import cookie_engine
 import random
+import os
 
 import game_engine
 
@@ -17,7 +18,8 @@ users_test_account = db["users_account"]
 cookies_collection = db["cookies_collection"]
 game_collection = db["game_collection"]
 
-app = Flask(__name__, static_url_path="/static")
+dir_path = os.getcwd()
+app = Flask(__name__, static_url_path="/static", template_folder= dir_path)
 app.config['SECRET'] = "secret!123"
 socketio = SocketIO(app, cors_allowed_origins="*")
 
