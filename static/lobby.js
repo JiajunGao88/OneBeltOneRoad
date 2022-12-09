@@ -1,6 +1,7 @@
 $(document).ready(function() {
     $("#logout").hide();
     $("#rank").hide();
+    $('#profile').hide();
     var socket = io.connect("http://localhost:5000");
     let current_user = ""
 
@@ -26,7 +27,10 @@ $(document).ready(function() {
         console.log(data["status"]);
         if (data["status"] === "True") {
             let welcome_words = "Welcome, " + data["username"] + "!";
+            let text = "<h4>You played: "+ data["games"]+", won: "+ data["won"]+"</h4>";
+            
             $("#welcome").text(welcome_words);
+            $('#profile').append(text)
             $("#auth_token").val("12345678910");
             $("#username").val(data["username"]);
             current_user = data["username"]
@@ -35,8 +39,11 @@ $(document).ready(function() {
             socket.send("ranking request");
 
             $(".login_signup").hide();
-            $("#logout").show();
             $("#rank").show();
+            $("#logout").show();
+            $('#profile').show();
+            
+
         } else {
             alert("Username or Password is wrong, please try again!");
         }
