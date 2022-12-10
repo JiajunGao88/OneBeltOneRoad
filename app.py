@@ -77,10 +77,14 @@ def ready(message):
         users_info = game_data["users_info"]
         for i in range(0, 4):
             users_info[i]["user_id"] = users[i]
+            db_user = users_account.find_one({"username": users_info[i]["username"]})
+            games = int(db_user["games"]) + 1
+            users_account.update_one({"username": users_info[i]["username"]}, {"$set": {"games": str(games)}})
         game_collection.update_one({"room-num": room}, {"$set": {"users_info": users_info}})
         emit("start", json.dumps({"roll_num": 1, "users": users_info}), to=room)
     sys.stdout.flush()
     sys.stderr.flush()
+
 
 @socketio.on('message', namespace='/game')
 def handle_message(message):

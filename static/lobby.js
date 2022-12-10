@@ -84,6 +84,7 @@ $(document).ready(function() {
         }
     })
     $("#refresh").click(function () {
+        $("#room-list-box").empty();
         socket.emit("refresh_room", "refresh");
     })
 

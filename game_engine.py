@@ -1,4 +1,5 @@
 import random, sys
+from app import users_test_account
 
 
 transfer_entries = {
@@ -34,7 +35,12 @@ def game_func(term_info, steps, users, users_info):
     users_info[termOfUsers]["location"] += steps
     location = users_info[termOfUsers]["location"]
     if location >= 65:
-        return "User{} wins!".format(termOfUsers + 1) # here
+        # add scores for the winner
+        filter = {'username': users_info[termOfUsers]["username"]}
+        user = users_test_account.find_one({"username":users_info[termOfUsers]["username"]})
+        newscores = { "$set": { 'won': str(int(user["won"]) + 1) } }
+        users_test_account.update_one(filter, newscores)
+        return "User{} wins!".format(termOfUsers + 1), [] # here
     if location in transfer_entries.keys():
         users_info[termOfUsers]["location"] = transfer_entries[location]
         alert_status.append(users[termOfUsers])
@@ -53,7 +59,6 @@ def game_func(term_info, steps, users, users_info):
             break
 
     return users_info, alert_status
-
 
 
 
