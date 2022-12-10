@@ -21,6 +21,7 @@
   </div>
   <!-- token -->
     <input id="auth_token" name="auth" hidden>
+    <input id="username" name="username" hidden>
     <!-- token end -->
 
   <div class="container">
@@ -39,6 +40,8 @@
                 <button class = "button login_signup" onclick="document.getElementById('id03').style.display='block'" style="width:auto;"><span>Sign Up</span></button>
             </div>
       </div>
+      <!--profile-->
+      <div class="row ml-1" id="profile"></div>
       <br>
       <br>
       <div class="row">
@@ -50,6 +53,9 @@
                         </div>
                         <div class="col-md-3 offset-md-1">
                             <button class = "button" onclick="document.getElementById('id02').style.display='block'" style="width:auto;"><span>&#43;</span></button>
+                        </div>
+                        <div class="col-md-3">
+                            <button class = "button" id = "refresh"><i class="fa fa-refresh"></i></button>
                         </div>
 
                     </div>
@@ -64,16 +70,30 @@
                                     <div class="col-md-4"> <h4>room name</h4> </div>
                                     <div class="col-md-1"> <h4>num player</h4> </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-3"> <h4>5</h4> </div>
-                                    <div class="col-md-4"> <h4>asdasd</h4> </div>
-                                    <div class="col-md-1"> <h4>0/4</h4> </div>
-                                    <div class="col-md-3 offset-md-1" id="button_area">
-                                        <form action="/game">
-                                            <button class="join" id="99">join</button>
-                                        </form>
-                                    </div>
-                                </div>
+{#                                <div class="row">#}
+{#                                    <div class="col-md-3"> <h4>5</h4> </div>#}
+{#                                    <div class="col-md-4"> <h4>asdasd</h4> </div>#}
+{#                                    <div class="col-md-1"> <h4>0/4</h4> </div>#}
+{#                                    <div class="col-md-3 offset-md-1" id="button_area">#}
+{#                                        <form action="/game" method="post" enctype="multipart/form-data">#}
+{#                                            <input id="username" name="username" hidden>#}
+{#                                            <input id="room" name="room" value="5" hidden>#}
+{#                                            <button type="submit" class="join">join</button>#}
+{#                                        </form>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                                <div class="row">#}
+{#                                    <div class="col-md-3"> <h4>99</h4> </div>#}
+{#                                    <div class="col-md-4"> <h4>asdasdaa</h4> </div>#}
+{#                                    <div class="col-md-1"> <h4>0/4</h4> </div>#}
+{#                                    <div class="col-md-3 offset-md-1" id="button_area">#}
+{#                                        <form action="/game" method="post" enctype="multipart/form-data">#}
+{#                                            <input id="username" name="username" hidden>#}
+{#                                            <input id="room" name="room" value="99" hidden>#}
+{#                                            <button type="submit" class="join">join</button>#}
+{#                                        </form>#}
+{#                                    </div>#}
+{#                                </div>#}
                             </div>
                         </div>
                     </div>
@@ -111,7 +131,7 @@
         </div>
 
         <div class="container">
-          <label for="room-name"><b>Username</b></label>
+          <label for="room-name"><b>Room Name</b></label>
           <input type="text" placeholder="Enter room name" name="room-name" id="room-name" required>
 
           <button id="Create" value="Create" onclick="document.getElementById('id02').style.display='none'" >Create</button>
