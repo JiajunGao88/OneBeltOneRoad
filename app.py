@@ -28,16 +28,17 @@ def index():  # put application's code here
 
 @app.route('/game', methods=['POST'])
 def game():  # put application's code here
-    print(request.form['username'])
+    # print(request.form['username'])
     db_data = game_collection.find_one({"room-num": str(request.form['room'])})
-    print(db_data)
+    # print(db_data)
     users_info = db_data["users_info"]
     players = int(db_data["num_players"]) + 1
+    users = db_data["users"]
     for i in range(0, 4):
         if users_info[i]["username"] == "":
             users_info[i]["username"] = request.form['username']
             break
-    print(users_info)
+    # print(users_info)
     game_collection.update_one({"room-num": str(request.form['room'])}, {"$set": {"num_players": players, "users_info": users_info}})
     sys.stdout.flush()
     sys.stderr.flush()
@@ -46,7 +47,7 @@ def game():  # put application's code here
                            username2=users_info[1]["username"],
                            username3=users_info[2]["username"],
                            username4=users_info[3]["username"],
-                           amount_ready=str(len(game_engine.ready_list)),
+                           amount_ready=str(len(users)),
                            room=str(request.form['room']),
                            username=request.form['username'])
 
@@ -57,42 +58,60 @@ def handle_message(message):
         ranking = list(users_test_account.find({}, {"_id":0, "password":0, "salt":0}))
         emit('ranking',ranking)
 
+@socketio.on('ready', namespace='/game')
+def ready(message):
+    # print("Received message: ", message)
+    room = message["room"]
+    user_id = message["socket_id"]
+    game_data = game_collection.find_one({"room-num": room})
+    users = game_data["users"]
+    users.append(user_id)
+    game_collection.update_one({"room-num": room}, {"$set": {"users": users}})
+    if len(users) < 4:
+        emit("ready", json.dumps(users), to=room)
+    else:
+        users_info = game_data["users_info"]
+        for i in range(0, 4):
+            users_info[i]["user_id"] = users[i]
+
+        game_collection.update_one({"room-num": room}, {"$set": {"users_info": users_info}})
+        emit("start", json.dumps({"roll_num": 1, "users": users_info}), to=room)
+    sys.stdout.flush()
+    sys.stderr.flush()
+
 @socketio.on('message', namespace='/game')
 def handle_message(message):
-    print("Received message: " + message)
+    print("Received message: ", message)
     game_engine.alert_status = []
-    # if "User connected!" in message:
-    #     game_engine.users.append(int(message.split(":")[0]))
-    #     # print("Connect Successful")
-    if "User ready!" in message:
-        user_id = int(message.split(":")[0])
-        if user_id not in game_engine.ready_list:
-            game_engine.ready_list.append(user_id)
-            send(json.dumps(["ready", game_engine.ready_list]), broadcast=True)
-        if len(game_engine.ready_list) == 4:
-            for i in range(0, len(game_engine.ready_list)):
-                game_engine.users_info[i]["user_id"] = game_engine.ready_list[i]
-                game_engine.users = game_engine.ready_list
-            send(json.dumps(["start", {"roll_num": 1, "user": game_engine.users_info}]), broadcast=True)
-    else:
-        term_info = json.loads(message)
-        roll_num = game_engine.roll_dice()
-        ret_game_states = game_engine.game_func(term_info, roll_num)
-        if type(ret_game_states) == str:
-            # users_info_collection.delete_one({"datatype": "status"})
-            send(json.dumps(["end", ret_game_states]))
-        send(json.dumps(["game", {"roll_num": roll_num, "user": ret_game_states}, game_engine.alert_status]), broadcast=True)
+    # if "User ready!" in message:
+    #     user_id = message["socket_id"]
+    #     if user_id not in game_engine.ready_list:
+    #         game_engine.ready_list.append(user_id)
+    #         send(json.dumps(["ready", game_engine.ready_list]), to=room)
+    #     if len(game_engine.ready_list) == 4:
+    #         for i in range(0, len(game_engine.ready_list)):
+    #             game_engine.users_info[i]["user_id"] = game_engine.ready_list[i]
+    #             game_engine.users = game_engine.ready_list
+    #         send(json.dumps(["start", {"roll_num": 1, "user": game_engine.users_info}]), broadcast=True)
+    # else:
+    message = json.loads(message)
+    room = message["room"]
+    db_data = game_collection.find_one({"room-num": room})
+    roll_num = game_engine.roll_dice()
+    ret_game_states, alert_status = game_engine.game_func(message, roll_num, db_data["users"], db_data["users_info"])
+    if type(ret_game_states) == str:
+        # users_info_collection.delete_one({"datatype": "status"})
+        send(json.dumps(["end", ret_game_states]), to=room)
+    game_collection.update_one({"room-num": room}, {"$set": {"roll_num": roll_num, "users_info": ret_game_states}})
+    send(json.dumps(["game", {"roll_num": roll_num, "user": ret_game_states}, alert_status]), to=room)
+
     sys.stdout.flush()
     sys.stderr.flush()
 
 @socketio.on("login", namespace="/")
 def signup_test(json):
-    print("login")
     username = json["username"]
     password = json["password"]
-    print("username is: " + username)
-    print("password is: " + password)
-
     # check if the user in db
     exist_user = users_test_account.find_one({"username":username})
     if exist_user == None:
@@ -146,6 +165,7 @@ def create(message):
             "game-start": "False",
             "num_players": 0,
             "roll-num": 1,
+            "users": [],
             "users_info": users_info}
     game_collection.insert_one(room)
     print(room)
@@ -170,15 +190,6 @@ def on_join(data):
     sys.stdout.flush()
     sys.stderr.flush()
 
-
-# def password_confirm(username, input_password):
-#     for user in game_engine.users_info:
-#         if user["username"] == username:
-#             return user["password"] == input_password
-#     return False
-
-
-    
 
 if __name__ == '__main__':
     # from waitress import serve

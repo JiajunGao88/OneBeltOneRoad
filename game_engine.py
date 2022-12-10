@@ -1,6 +1,5 @@
-import random
+import random, sys
 
-import app
 
 transfer_entries = {
     6: 15, 7: 11, 11: 7, 15: 6,
@@ -9,15 +8,13 @@ transfer_entries = {
     49: 39, 50: 30, 59: 34, 63: 45
 }
 countries = [4, 13, 21, 25, 33, 41, 48, 60]
-users_info = [{"location": 0, "status": False, "term": True},
-              {"location": 0, "status": False, "term": False},
-              {"location": 0, "status": False, "term": False},
-              {"location": 0, "status": False, "term": False}]
+# users_info = [{"location": 0, "status": False, "term": True},
+#               {"location": 0, "status": False, "term": False},
+#               {"location": 0, "status": False, "term": False},
+#               {"location": 0, "status": False, "term": False}]
 
-alert_status = []
-
-ready_list = []
-users = []
+# ready_list = []
+# users = []
 dic_users = []
 
 def roll_dice():
@@ -25,13 +22,18 @@ def roll_dice():
     return num
 
 
-def game_func(term_info, steps):
+def game_func(term_info, steps, users, users_info):
+    alert_status = []
     # steps = term_info["step"]
-    termOfUsers = users.index(term_info["user"])
+    termOfUsers = users.index(str(term_info["user"]))
+    print(int(term_info["user"]))
+    print(termOfUsers)
+    sys.stdout.flush()
+    sys.stderr.flush()
     users_info[termOfUsers]["location"] += steps
     location = users_info[termOfUsers]["location"]
     if location >= 65:
-        return "User{} wins!".format(termOfUsers + 1)
+        return "User{} wins!".format(termOfUsers + 1) # here
     if location in transfer_entries.keys():
         users_info[termOfUsers]["location"] = transfer_entries[location]
         alert_status.append(users[termOfUsers])
@@ -48,7 +50,8 @@ def game_func(term_info, steps):
         else:
             users_info[termOfUsers % 4]["term"] = True
             break
-    return users_info
+
+    return users_info, alert_status
 
 
 
