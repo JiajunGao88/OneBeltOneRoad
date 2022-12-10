@@ -15,7 +15,8 @@ countries = [4, 13, 21, 25, 33, 41, 48, 60]
 
 # ready_list = []
 # users = []
-dic_users = []
+# dic_users = []
+
 
 def roll_dice():
     num = random.randint(1, 6)

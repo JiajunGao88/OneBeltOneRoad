@@ -82,7 +82,6 @@ def ready(message):
 @socketio.on('message', namespace='/game')
 def handle_message(message):
     print("Received message: ", message)
-    game_engine.alert_status = []
     # if "User ready!" in message:
     #     user_id = message["socket_id"]
     #     if user_id not in game_engine.ready_list:
