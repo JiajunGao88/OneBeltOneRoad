@@ -51,6 +51,10 @@ def game():  # put application's code here
                            room=str(request.form['room']),
                            username=request.form['username'])
 
+@app.route('/data')
+def datacheck():  # put application's code here
+    r = list(game_collection.find({}))
+    return render_template("data.html",room = r)
 
 @socketio.on('message')
 def handle_message(message):
@@ -107,9 +111,26 @@ def handle_message(message):
     sys.stdout.flush()
     sys.stderr.flush()
 
+@socketio.on("request_room", namespace="/")
+def request_room_from_web(data):
+    room_list = list(game_collection.find({}, {'_id': 0}))
+    # send_list = []
+    for i in room_list:
+        # if i["game-start"] == "False":
+        #     break
+        num_user = 0
+        for j in i["users_info"]:
+            if j["username"] != "":
+                num_user += 1
+        num_user_str = str(num_user) + "/4"
+        # send_list.append({"m":i["room-num"], "n":i["room-name"], "p":num_user_str})
+        a_room = {"m":i["room-num"], "n":i["room-name"], "p":num_user_str}
+        emit('room_list', a_room)
+
 @socketio.on("login", namespace="/")
 def signup_test(json):
     username = json["username"]
+    username = cookie_engine.escape_html(username)
     password = json["password"]
     # check if the user in db
     exist_user = users_test_account.find_one({"username":username})
@@ -130,6 +151,7 @@ def signup_test(json):
 def signup_test(json):
     print("signup")
     username = json["username"]
+    username = cookie_engine.escape_html(username)
     password = json["password"]
     print("username is: " + username)
     print("password is: " + password)
@@ -160,7 +182,7 @@ def create(message):
                   {"username": "", "location": 0, "status": False, "term": False},
                   {"username": "", "location": 0, "status": False, "term": False}]
     room = {"room-num": message["room_num"],
-            "room-name": message["room-name"],
+            "room-name": cookie_engine.escape_html(message["room-name"]),
             "game-start": "False",
             "num_players": 0,
             "roll-num": 1,

@@ -3,6 +3,15 @@ $(document).ready(function() {
     $("#rank").hide();
     var socket = io.connect("http://localhost:5000");
 
+    // room list
+    socket.on('room_list', function(data) {
+        console.log(data);
+        a_room = data;
+        // room_creation(a_room["m"], a_room["n"]);
+        let room_name = $("#room-name").val();
+        socket.emit("create", {"room-name": room_name});
+    })
+
     // ranking table
     socket.on('ranking', function(data) {
         ranking_list = data;
@@ -31,6 +40,9 @@ $(document).ready(function() {
             $(".login_signup").hide();
             $("#logout").show();
             $("#rank").show();
+
+            // request for room
+            socket.emit("request_room", "");
         } else {
             alert("Username or Password is wrong, please try again!");
         }
@@ -92,6 +104,7 @@ $(document).ready(function() {
         form.append($('<input>').attr({"id": "username", "name": "username", "value": username, "hidden": "true"}));
         form.append($('<input>').attr({"id": "room", "name": "room", "value": room_num, "hidden": "true"}));
         form.append($('<button>').attr({"type": "submit", "class": "join"}).text("join"));
+
         room.append($("<div>").attr({"class": "col-md-3 offset-md-1", "id": "button_area" + room_num}));
         $('#button_area' + room_num).append(form);
         // room.append($("<div>").attr({"class": "col-md-3 offset-md-1", "id": "button_area" + room_num}));
