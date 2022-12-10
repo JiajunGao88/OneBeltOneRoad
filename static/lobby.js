@@ -1,6 +1,7 @@
 $(document).ready(function() {
     $("#logout").hide();
     $("#rank").hide();
+    $('#profile').hide();
     var socket = io.connect("http://localhost:5000");
 
     // room list
@@ -34,7 +35,9 @@ $(document).ready(function() {
         console.log(data["status"]);
         if (data["status"] === "True") {
             let welcome_words = "Welcome, " + data["username"] + "!";
+            let text = "<h4>You played: "+ data["games"]+", won: "+ data["won"]+"</h4>";
             $("#welcome").text(welcome_words);
+            $('#profile').append(text)
             $("#auth_token").val("12345678910");
             $("#username").val(data["username"]);
             console.log($("#username").val());
@@ -44,6 +47,8 @@ $(document).ready(function() {
             $(".login_signup").hide();
             $("#logout").show();
             $("#rank").show();
+            $('#profile').show();
+
 
             // request for room
             socket.emit("request_room", "");

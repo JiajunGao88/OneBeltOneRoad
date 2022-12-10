@@ -140,7 +140,7 @@ def signup_test(json):
             feedback = {"status": "False", "username": username}
             emit('login',feedback)
         else:
-            feedback = {"status": "True", "username": username}
+            feedback = {"status": "True", "username": username, "won": exist_user["won"], "games": exist_user["games"]}
             emit('login', feedback)
 
 @socketio.on("signup", namespace="/")
