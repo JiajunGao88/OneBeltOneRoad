@@ -9,3 +9,6 @@
 ## Run
 - Command
     - flask run
+
+## The website deploys on
+    - https://onebeltoneroad-f4cpv.ondigitalocean.app/
