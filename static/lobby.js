@@ -6,10 +6,14 @@ $(document).ready(function() {
     // room list
     socket.on('room_list', function(data) {
         console.log(data);
-        a_room = data;
         // room_creation(a_room["m"], a_room["n"]);
-        let room_name = $("#room-name").val();
-        socket.emit("create", {"room-name": room_name});
+        const len = data.length;
+        var rooms = data;
+        for (var i = 0; i < len; i++) {
+            var room = rooms[i];
+            console.log(room)
+            room_creation(room["room-num"], room["room-name"]);
+        }
     })
 
     // ranking table
@@ -74,7 +78,9 @@ $(document).ready(function() {
             socket.emit("create", {"room-name": room_name});
         }
     })
-
+    $("#refresh").click(function () {
+        socket.emit("refresh_room", "refresh");
+    })
 
     // After User Login, adding into Live user List
     $("#Login").click(function () {

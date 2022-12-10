@@ -77,7 +77,6 @@ def ready(message):
         users_info = game_data["users_info"]
         for i in range(0, 4):
             users_info[i]["user_id"] = users[i]
-
         game_collection.update_one({"room-num": room}, {"$set": {"users_info": users_info}})
         emit("start", json.dumps({"roll_num": 1, "users": users_info}), to=room)
     sys.stdout.flush()
@@ -111,21 +110,18 @@ def handle_message(message):
     sys.stdout.flush()
     sys.stderr.flush()
 
-@socketio.on("request_room", namespace="/")
+@socketio.on("refresh_room", namespace="/")
 def request_room_from_web(data):
     room_list = list(game_collection.find({}, {'_id': 0}))
-    # send_list = []
+    send_list = []
     for i in room_list:
         # if i["game-start"] == "False":
         #     break
-        num_user = 0
-        for j in i["users_info"]:
-            if j["username"] != "":
-                num_user += 1
-        num_user_str = str(num_user) + "/4"
+
         # send_list.append({"m":i["room-num"], "n":i["room-name"], "p":num_user_str})
-        a_room = {"m":i["room-num"], "n":i["room-name"], "p":num_user_str}
-        emit('room_list', a_room)
+        send_list.append({"room-num": i["room-num"], "room-name": i["room-name"]})
+    emit('room_list', send_list)
+
 
 @socketio.on("login", namespace="/")
 def signup_test(json):
